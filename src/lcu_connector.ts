@@ -1,4 +1,3 @@
-
 const https = require('https');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 //example http load to lcu
@@ -35,6 +34,7 @@ const LCUProcessDetails = (query:string, callback: any): any => {
       port = port_match[0].split("=")[1];
       token = token_match[0].split("=")[1];
     }
+    return {port, token};
     callback("LCU details acquired");
   })
 }

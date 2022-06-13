@@ -5,7 +5,6 @@ import https from "https";
 import { exec } from "child_process";
 
 dotenv.config();
-const app = express();
 
 const base_url: string = "na1.api.riotgames.com";
 const championv3 = "/lol/platform/v3/champion-rotations";

@@ -1,4 +1,5 @@
-import { LCUDetails, lcu_details } from "./authenticator";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // example http load to lcu
 // const options = {
@@ -14,4 +15,3 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // }
 //
 //
-

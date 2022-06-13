@@ -1,40 +1,52 @@
-import {exec} from 'child_process';
-import {log} from 'console';
+const util = require('node:util');
+const exec = util.promisify(require('node:child_process').exec);
 
 export interface LCUDetails {
-	port?: string 
-	token?: string
+  port?: string;
+  token?: string;
+  running?: boolean;
 }
 
 export interface LCUHeader {
-	hostname: string
-} 
+  hostname: string;
+}
 
-export function lcu_details():LCUDetails{
-  const platform:string = process.platform;
-	const process_name = 'LeagueClientUx.exe';
-  let cmd:string = '';
-  switch(platform){
-    case 'win32' : cmd = 'wmic PROCESS WHERE NAME="LeagueClientUx.exe"'; break;
-    case 'darwin' : cmd = 'ps -ax | grep ' + process_name; break;
-    case 'linux' : cmd = 'ps -A | grep ' + process_name; break;
-    default: break;
+function retrieve_platform_command(process_name: string): string {
+  const platform: string = process.platform;
+  switch (platform) {
+    case "win32":
+      return 'wmic PROCESS WHERE NAME="LeagueClientUx.exe"';
+    case "darwin":
+      return "ps -ax | grep " + process_name;
+    default:
+      return "ps aux | grep " + process_name;
   }
-  const port_regex = /--app-port=([0-9]*)/;
-  const token_regex = /--remoting-auth-token=([\w-]*)/;
-	let lcu_details:LCUDetails = {};
-  exec(cmd, (err, stdout, stderr) => {
-		if(err){
-			console.error(`exec error: ${err}`);
+}
+
+export async function lcu_details():Promise<LCUDetails>{
+	let cmd: string = retrieve_platform_command("LeagueClientUx");
+	const port_regex = /--app-port=([0-9]*)/;
+	const token_regex = /--remoting-auth-token=([\w-]*)/;
+	let lcu_details: LCUDetails = {};
+	try{ 
+		const {stdout, stderr } = await exec(cmd);
+		const port_match = stdout.match(port_regex);
+		const token_match = stdout.match(token_regex);
+		if (port_match && token_match) {
+			lcu_details.running = true;
+			lcu_details.port = port_match[0].split("=")[1];
+			lcu_details.token = token_match[0].split("=")[1];
+		} else {
+			lcu_details.running = false;
 		}
-    const port_match = stdout.match(port_regex);
-    const token_match = stdout.match(token_regex);
-    if(port_match && token_match){
-      lcu_details.port = port_match[0].split("=")[1];
-      lcu_details.token = token_match[0].split("=")[1];
-    }
-		console.log(stdout);
-		console.log(stderr);
-	});
+	} catch (e) {
+		console.error(e);
+	}
 	return lcu_details;
 }
+
+lcu_details().then((data)=>{
+	console.log(data);
+}).catch(err => {
+	console.log(err);
+})

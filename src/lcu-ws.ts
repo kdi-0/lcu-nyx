@@ -1,6 +1,4 @@
-import https from "https";
 import WebSocket, { ClientOptions } from "ws";
-import { LCUDetails } from "./authenticator";
 
 export interface EventResponse<T = any> {
   uri: string;

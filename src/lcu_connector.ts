@@ -1,5 +1,5 @@
-import { LCUDetails, LCUHeader, lcu_details } from "./authenticator";
-import { EventEmitter } from "stream";
+import { lcu_details } from "./authenticator";
+import { LCUDetails, LCUHeader } from "./lcu_types";
 import WebSocket from "ws";
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 lcu_details()
@@ -25,15 +25,3 @@ lcu_details()
   .catch((e: any) => {
     console.log(e);
   });
-
-const MESSAGE_TYPES = {
-  WELCOME: 0,
-  PREFIX: 1,
-  CALL: 2,
-  CALLRESULT: 3,
-  CALLERROR: 4,
-  SUBSCRIBE: 5,
-  UNSUBSCRIBE: 6,
-  PUBLISH: 7,
-  EVENT: 8,
-};

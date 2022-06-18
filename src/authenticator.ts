@@ -1,19 +1,6 @@
 import util from "node:util";
+import { LCUDetails } from "./lcu_types";
 const exec = util.promisify(require("node:child_process").exec);
-
-export interface LCUDetails {
-  port?: string;
-  token?: string;
-  running?: boolean;
-}
-
-export interface LCUHeader {
-  hostname: string;
-  port: LCUDetails["port"];
-  path: LCUDetails["token"];
-  method: string;
-  headers: object;
-}
 
 export async function lcu_details(): Promise<LCUDetails> {
   let cmd: string = retrieve_platform_command("LeagueClientUx");

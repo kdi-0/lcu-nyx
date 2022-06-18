@@ -1,21 +1,22 @@
 import WebSocket, { ClientOptions } from "ws";
 
-export interface EventResponse<T = any> {
-  uri: string;
-  data: T;
-}
+const MESSAGE_TYPES = {
+  WELCOME: 0,
+  PREFIX: 1,
+  CALL: 2,
+  CALLRESULT: 3,
+  CALLERROR: 4,
+  SUBSCRIBE: 5,
+  UNSUBSCRIBE: 6,
+  PUBLISH: 7,
+  EVENT: 8,
+};
 
-export type EventCallback<T = any> = (
-  data: T | null,
-  event: EventResponse<T>
-) => void;
-
-export class LCU extends WebSocket {
-  subscriptions: Map<string, EventCallback[]> = new Map();
+export class LCU_Websocket extends WebSocket {
   constructor(url: string, options: any) {
     super(url, options);
     this.on("open", () => {
-      this.send(JSON.stringify([5, "OnJsonApiEvent"]));
+      this.send(JSON.stringify([MESSAGE_TYPES.SUBSCRIBE, "OnJsonApiEvent"]));
     });
   }
 }
